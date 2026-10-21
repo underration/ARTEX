@@ -16,6 +16,7 @@ services:
 
   artex:
     image: tomicdd/artex:${ARTEX_TAG:-latest}
+    platform: linux/amd64
     depends_on:
       postgres:
         condition: service_healthy

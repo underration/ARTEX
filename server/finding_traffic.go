@@ -128,7 +128,7 @@ func (s *Server) findingTrafficAccess(w http.ResponseWriter, r *http.Request, wr
 			return 0, false
 		}
 		if write && inherited {
-			writeErr(w, 403, "继承漏洞只读，请在来源任务中修改")
+			writeErr(w, 403, "継承された脆弱性は読み取り専用です。元のタスクで変更してください")
 			return 0, false
 		}
 	}
@@ -171,7 +171,7 @@ func (s *Server) bindFindingTraffic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(body.Refs) == 0 {
-		writeErr(w, 400, "请选择流量")
+		writeErr(w, 400, "トラフィックを選択してください")
 		return
 	}
 	out, err := s.evidenceStore().Bind(r.Context(), id, body.Refs)
@@ -194,14 +194,14 @@ func (s *Server) editFindingTraffic(w http.ResponseWriter, r *http.Request) {
 		Order   []string `json:"binding_ids"`
 	}
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&body); err != nil || body.Version == nil {
-		writeErr(w, 400, "version 和有效请求体必填")
+		writeErr(w, 400, "version と有効なリクエストボディは必須です")
 		return
 	}
 	var order []int64
 	bindingID := int64(0)
 	if r.Method == http.MethodPut {
 		if body.Order == nil {
-			writeErr(w, 400, "binding_ids 必填")
+			writeErr(w, 400, "binding_ids は必須です")
 			return
 		}
 		order = []int64{}
@@ -240,7 +240,7 @@ type evidencePreview struct {
 
 func readEvidencePreview(store *evidence.Store, snapshot db.TrafficEvidenceSnapshot, side string, offset, length int64) (out evidencePreview, err error) {
 	if offset < 0 || length < 0 {
-		return out, errors.New("offset / length 不能为负数")
+		return out, errors.New("offset / length は負の値にできません")
 	}
 	if length == 0 || length > 8192 {
 		length = 8192
@@ -251,7 +251,7 @@ func readEvidencePreview(store *evidence.Store, snapshot db.TrafficEvidenceSnaps
 	}
 	defer f.Close()
 	if offset > total {
-		return out, errors.New("offset 超出正文长度")
+		return out, errors.New("offset がボディの長さを超えています")
 	}
 	if _, err = f.Seek(offset, io.SeekStart); err != nil {
 		return out, err
@@ -274,7 +274,7 @@ func readEvidencePreview(store *evidence.Store, snapshot db.TrafficEvidenceSnaps
 	out = evidencePreview{Offset: offset, Total: total, NextOffset: offset + int64(len(raw)), Truncated: offset+int64(len(raw)) < total,
 		Binary: bytes.IndexByte(raw, 0) >= 0 || (offset == 0 && !utf8.Valid(raw))}
 	if out.Binary {
-		out.Content = fmt.Sprintf("[二进制正文，%d 字节；请下载查看]", total)
+		out.Content = fmt.Sprintf("[バイナリボディ、%d バイト；ダウンロードして確認してください]", total)
 	} else {
 		out.Content = string(bytes.ToValidUTF8(raw, []byte("�")))
 	}
@@ -366,8 +366,8 @@ func (s *Server) getFindingTrafficBody(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) toolGetFindingTraffic() actool.CoreTool {
-	return roTool("get_finding_traffic", "读取漏洞已绑定的真实流量证据，不依赖捕获开关。finding_id 使用 report_finding JSON 返回的独立漏洞记录 ID（不是第一行的探索节点 ID）。先不传 binding_id 获取清单及 version；空清单是正常情况，TCP 等非 HTTP 漏洞或未采集时仍可依据文字/命令证据编写报告，不强制绑定。有绑定时按 binding_id、side(request/response)、offset 分段读取正文。写报告时将读取的 version 作为 evidence_version 传给 update_finding_report，后者 finding_id 仍使用探索节点 ID。",
-		objSchema(map[string]any{"finding_id": strParam("独立漏洞记录 ID"), "binding_id": strParam("清单里的绑定 ID，省略则返回清单"), "side": strParam("request 或 response，默认 response"), "offset": map[string]any{"type": "integer"}, "length": map[string]any{"type": "integer"}}, "finding_id"),
+	return roTool("get_finding_traffic", "脆弱性にバインド済みの実際のトラフィック証跡を読み取ります（キャプチャスイッチの状態に依存しません）。finding_id には report_finding の JSON が返す独立した脆弱性レコード ID（1 行目の探索ノード ID ではありません）を使用します。まず binding_id を省略してリストと version を取得してください。空のリストは正常であり、TCP などの非 HTTP 脆弱性や未キャプチャ時はテキスト/コマンド証跡に基づいてレポートを作成でき、バインドは強制されません。バインドがある場合は binding_id、side(request/response)、offset を指定してボディを分割読み取りします。レポート作成時は読み取った version を evidence_version として update_finding_report に渡し、その finding_id には引き続き探索ノード ID を使用してください。",
+		objSchema(map[string]any{"finding_id": strParam("独立した脆弱性レコード ID"), "binding_id": strParam("リスト内のバインド ID。省略時はリストを返す"), "side": strParam("request または response、デフォルトは response"), "offset": map[string]any{"type": "integer"}, "length": map[string]any{"type": "integer"}}, "finding_id"),
 		func(ctx context.Context, in json.RawMessage) (actool.Result, error) {
 			var a struct {
 				FindingID      json.RawMessage `json:"finding_id"`

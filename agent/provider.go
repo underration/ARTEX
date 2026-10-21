@@ -308,6 +308,7 @@ func IsQuotaExhaustedMessage(message string) bool {
 		"billing hard limit", "billing_not_active", "credit balance", "insufficient credit",
 		"insufficient balance", "balance is too low", "payment required", "status 402",
 		"余额不足", "额度不足", "额度已用尽", "欠费",
+		"残高不足", "クォータ上限", "利用枠不足",
 	}
 	for _, marker := range markers {
 		if strings.Contains(message, marker) {
@@ -427,12 +428,12 @@ func quotaAwareHTTPClient(proxy, sessionHeaderKey string) (*http.Client, error) 
 func logTestConnection(c Config, capt *llmrec.Capture) {
 	attempts := capt.Attempts()
 	if len(attempts) == 0 {
-		log.Printf("[llm-test] %s / %s @ %s — 未发出任何 HTTP 请求(配置解析或建连即失败)",
+		log.Printf("[llm-test] %s / %s @ %s — HTTP リクエストが送信されませんでした（設定解析または接続確立の段階で失敗）",
 			c.Provider(), c.Model, c.BaseURL)
 		return
 	}
 	for i, a := range attempts {
-		log.Printf("[llm-test] %s / %s @ %s — 尝试 %d/%d HTTP %d\n响应体: %s",
+		log.Printf("[llm-test] %s / %s @ %s — 試行 %d/%d HTTP %d\nレスポンスボディ: %s",
 			c.Provider(), c.Model, c.BaseURL, i+1, len(attempts), a.Status, clipBody(a.Body))
 	}
 }
@@ -446,7 +447,7 @@ func clipBody(s string) string {
 	}
 	const max = 4096
 	if len(s) > max {
-		return s[:max] + fmt.Sprintf("…(截断,共 %d 字节)", len(s))
+		return s[:max] + fmt.Sprintf("…(切り詰め、計 %d バイト)", len(s))
 	}
 	return s
 }
@@ -480,7 +481,7 @@ func TestConnection(ctx context.Context, c Config) (time.Duration, string, error
 	// EscalateMaxTokens 保持 false:不因截断而抬额重试,避免 resume 循环空烧。
 	reply, err := agentcore.Run(ctx, agentcore.Options{
 		Provider:       prov,
-		SystemPrompt:   []string{"你是连接测试。直接输出两个字符 OK 即可，不要思考、不要解释、不要别的。"},
+		SystemPrompt:   []string{"あなたは接続テストです。思考や説明やその他の文字は一切出力せず、OK の 2 文字だけを直接出力してください。"},
 		PermissionMode: acperm.ModeBypass,
 		MaxTurns:       1,
 		MaxTokens:      8192,
@@ -495,7 +496,7 @@ func TestConnection(ctx context.Context, c Config) (time.Duration, string, error
 	// 测试却报成功——正是本项要消除的落差。没有可见正文一律判失败。
 	reply = strings.TrimSpace(reply)
 	if reply == "" {
-		return lat, "", fmt.Errorf("模型无回复内容（请求已通，但未返回任何文本）")
+		return lat, "", fmt.Errorf("モデルからの応答内容がありません（リクエストは成功しましたが、テキストが一切返されませんでした）")
 	}
 	return lat, reply, nil
 }

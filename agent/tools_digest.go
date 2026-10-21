@@ -119,11 +119,11 @@ func (t *ToolSet) resolveDigest(id int64) (*db.Node, *db.ExplorationStore, int64
 // node's full detail.
 func (t *ToolSet) expandDigest() actool.CoreTool {
 	return t.writeExpTool("expand_digest",
-		"展开一个 cold digest：返回它折叠的成员紧凑列表（id/summary/state/confidence），与概览 recent_facts/recent_done_intents 同形状。要某条完整细节/证据用 node_detail(member_id)。",
+		"コールドダイジェストを展開します。折りたたまれたメンバーのコンパクトな一覧（id/summary/state/confidence）を返します（概要の recent_facts/recent_done_intents と同じ形式）。特定の項目の完全な詳細や証拠が必要な場合は node_detail(member_id) を使用してください。",
 		map[string]any{
 			"type": "object",
 			"properties": map[string]any{
-				"id": map[string]any{"type": "integer", "description": "digest 节点 id（来自概览 cold_digests）"},
+				"id": map[string]any{"type": "integer", "description": "digest ノード id（概要の cold_digests から取得）"},
 			},
 			"required": []any{"id"},
 		},
@@ -134,7 +134,7 @@ func (t *ToolSet) expandDigest() actool.CoreTool {
 			_ = json.Unmarshal(raw, &in)
 			n, store, srcTaskID := t.resolveDigest(in.ID)
 			if n == nil {
-				return jsonResult(map[string]any{"error": fmt.Sprintf("#%d 不是 digest 节点（本任务或直接关联任务里都没找到）", in.ID)})
+				return jsonResult(map[string]any{"error": fmt.Sprintf("#%d は digest ノードではありません（本タスクまたは直接関連するタスクで見つかりませんでした）", in.ID)})
 			}
 			var p struct {
 				Body string `json:"body"`

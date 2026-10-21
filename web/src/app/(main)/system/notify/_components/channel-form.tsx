@@ -120,7 +120,7 @@ export function ConfigField({
   const hint = masked ? (
     <p className="text-muted-foreground flex items-center gap-1 text-xs">
       <CheckIcon className="size-3" />
-      已保存{maskedTail ? `（尾号 ${maskedTail}）` : ""} · 填入新值即覆盖，清空则删除该项
+      保存済み{maskedTail ? `（末尾 ${maskedTail}）` : ""} · 新しい値を入力すると上書きされ、空欄にすると削除されます
     </p>
   ) : (
     def.help && <p className="text-muted-foreground text-xs">{def.help}</p>
@@ -141,13 +141,13 @@ export function FilterSummary({ filter }: { filter: NotificationFilter }) {
   if (filter.min_severity) {
     parts.push(SEVERITY_OPTIONS.find((o) => o.value === filter.min_severity)?.label ?? filter.min_severity);
   }
-  if (filter.vulnclass_include?.length) parts.push(`类型含 ${filter.vulnclass_include.length} 词`);
-  if (filter.vulnclass_exclude?.length) parts.push(`排除 ${filter.vulnclass_exclude.length} 词`);
-  if (filter.task_ids?.length) parts.push(`${filter.task_ids.length} 个任务`);
-  if (filter.asset_ids?.length) parts.push(`${filter.asset_ids.length} 个资产`);
-  if (filter.on_status_change) parts.push("含状态变更");
+  if (filter.vulnclass_include?.length) parts.push(`種類含む ${filter.vulnclass_include.length} 語`);
+  if (filter.vulnclass_exclude?.length) parts.push(`除外 ${filter.vulnclass_exclude.length} 語`);
+  if (filter.task_ids?.length) parts.push(`${filter.task_ids.length} 件のタスク`);
+  if (filter.asset_ids?.length) parts.push(`${filter.asset_ids.length} 件のアセット`);
+  if (filter.on_status_change) parts.push("ステータス変更を含む");
   if (parts.length === 0) {
-    return <p className="text-muted-foreground text-sm">全部漏洞</p>;
+    return <p className="text-muted-foreground text-sm">すべての脆弱性</p>;
   }
   return <p className="text-muted-foreground text-sm">{parts.join(" · ")}</p>;
 }
