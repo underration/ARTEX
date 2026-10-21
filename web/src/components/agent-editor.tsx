@@ -115,66 +115,66 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
   async function doPreview() {
     try {
       const r = await api.previewAgentPrompt(agentKey, prompt);
-      setPreview(r.error ? "渲染错误：" + r.error : r.rendered);
+      setPreview(r.error ? "レンダーエラー：" + r.error : r.rendered);
     } catch (e) {
-      setPreview("预览失败：" + (e as Error).message);
+      setPreview("プレビュー失敗：" + (e as Error).message);
     }
   }
   async function savePrompt() {
     try {
       const r = await api.saveAgentPrompt(agentKey, prompt);
-      toast.success(`已保存为版本 v${r.version}`);
+      toast.success(`バージョン v${r.version} として保存しました`);
       reload();
       onSaved?.();
     } catch (e) {
-      toast.error("保存失败：" + (e as Error).message);
+      toast.error("保存失敗：" + (e as Error).message);
     }
   }
   async function resetPrompt() {
     try {
       const r = await api.resetAgentPrompt(agentKey);
-      toast.success(`已恢复为内置默认（v${r.version}）`);
+      toast.success(`ビルトインのデフォルト（v${r.version}）に復元しました`);
       reload();
     } catch (e) {
-      toast.error("恢复失败：" + (e as Error).message);
+      toast.error("復元失敗：" + (e as Error).message);
     }
   }
   async function saveWrapup() {
     try {
       const turns = Math.max(0, Math.floor(Number(wrapupTurns) || 0));
       await api.saveAgentWrapup(agentKey, wrapup, turns);
-      toast.success(wrapup.trim() || turns > 0 ? "收尾配置已保存（下次运行生效）" : "已清空，将使用内置默认");
+      toast.success(wrapup.trim() || turns > 0 ? "ラップアップ設定を保存しました（次回実行時に有効）" : "クリアしました。ビルトインのデフォルトを使用します");
       reload();
     } catch (e) {
-      toast.error("保存失败：" + (e as Error).message);
+      toast.error("保存失敗：" + (e as Error).message);
     }
   }
   async function resetWrapup() {
     try {
       await api.resetAgentWrapup(agentKey);
-      toast.success("已恢复为内置默认");
+      toast.success("ビルトインのデフォルトに復元しました");
       reload();
     } catch (e) {
-      toast.error("恢复失败：" + (e as Error).message);
+      toast.error("復元失敗：" + (e as Error).message);
     }
   }
   async function saveTaskTimeoutWrapup() {
     try {
       const turns = Math.max(0, Math.floor(Number(ttTurns) || 0));
       await api.saveAgentTaskTimeoutWrapup(agentKey, ttWrapup, turns);
-      toast.success("任务超时收尾配置已保存（下次运行生效）");
+      toast.success("タスクタイムアウト時のラップアップ設定を保存しました（次回実行時に有効）");
       reload();
     } catch (e) {
-      toast.error("保存失败：" + (e as Error).message);
+      toast.error("保存失敗：" + (e as Error).message);
     }
   }
   async function resetTaskTimeoutWrapup() {
     try {
       await api.resetAgentTaskTimeoutWrapup(agentKey);
-      toast.success("已恢复为内置默认");
+      toast.success("ビルトインのデフォルトに復元しました");
       reload();
     } catch (e) {
-      toast.error("恢复失败：" + (e as Error).message);
+      toast.error("復元失敗：" + (e as Error).message);
     }
   }
   async function saveConfig() {
@@ -190,10 +190,10 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
       if (showWebSearch) patch.web_search = webSearch;
       if (showInteractiveShell) patch.interactive_shell = interactiveShell;
       await api.saveAgentConfig(agentKey, patch);
-      toast.success("已保存运行配置（立即生效）");
+      toast.success("実行設定を保存しました（即時反映）");
       reload();
     } catch (e) {
-      toast.error("保存失败：" + (e as Error).message);
+      toast.error("保存失敗：" + (e as Error).message);
     }
   }
   // applyVis optimistically updates, persists, and toasts success/failure. On
@@ -210,7 +210,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
     } catch (e) {
       setMcpVisible(prevMcp);
       setSkillVisible(prevSkill);
-      toast.error("保存失败：" + (e as Error).message);
+      toast.error("保存失敗：" + (e as Error).message);
     }
   }
   function toggleMcp(id: number) {
@@ -219,7 +219,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
     applyVis(
       on ? mcpVisible.filter((x) => x !== id) : [...mcpVisible, id],
       skillVisible,
-      `${on ? "已取消" : "已开启"} MCP「${name}」可见`,
+      `MCP「${name}」の表示を${on ? "無効" : "有効"}にしました`,
     );
   }
   function toggleSkill(name: string) {
@@ -227,7 +227,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
     applyVis(
       mcpVisible,
       on ? skillVisible.filter((x) => x !== name) : [...skillVisible, name],
-      `${on ? "已取消" : "已开启"} Skill「${name}」可见`,
+      `Skill「${name}」の表示を${on ? "無効" : "有効"}にしました`,
     );
   }
   async function toggleTool(t: Tool) {
@@ -242,17 +242,17 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
         agents: nextAgents,
         enabled: t.enabled,
       });
-      toast.success(`${on ? "已解绑" : "已绑定"}工具「${t.key}」`);
+      toast.success(`ツール「${t.key}」を${on ? "バインド解除" : "バインド"}しました`);
       onSaved?.(); // refresh the list so the card's 工具 count stays in sync
     } catch (e) {
-      toast.error("保存工具绑定失败：" + (e as Error).message);
+      toast.error("ツールのバインド保存失敗：" + (e as Error).message);
       reload();
       api.tools().then(setTools).catch(() => {});
     }
   }
 
   if (loaded && !detail) {
-    return <div className="text-muted-foreground p-6 text-center text-sm">未找到 Agent：{agentKey}</div>;
+    return <div className="text-muted-foreground p-6 text-center text-sm">Agent が見つかりません：{agentKey}</div>;
   }
   // config is meaningless for the conversational main agent and the fixed-budget
   // goals decomposer; every other agent (workers, custom assistants) honors it.
@@ -270,12 +270,12 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
   return (
     <Tabs defaultValue="prompt" className="flex min-h-0 flex-1 flex-col">
       <TabsList className="mx-4 mt-2 w-fit">
-        <TabsTrigger value="prompt">配置与提示词</TabsTrigger>
-        <TabsTrigger value="wrapup">收尾提示词</TabsTrigger>
+        <TabsTrigger value="prompt">設定とプロンプト</TabsTrigger>
+        <TabsTrigger value="wrapup">ラップアッププロンプト</TabsTrigger>
         <TabsTrigger value="mcp">MCP</TabsTrigger>
         <TabsTrigger value="skill">Skill</TabsTrigger>
         <TabsTrigger value="tools">Tools</TabsTrigger>
-        {isCustom && <TabsTrigger value="triggers">触发</TabsTrigger>}
+        {isCustom && <TabsTrigger value="triggers">トリガー</TabsTrigger>}
       </TabsList>
 
       {/* 配置 + 提示词 */}
@@ -285,23 +285,23 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
             <div className="grid gap-3 rounded-md border p-3">
               {showLLM && (
                 <div className="grid gap-1.5">
-                  <Label htmlFor="llm-profile" className="text-xs">默认模型（LLM 配置）</Label>
+                  <Label htmlFor="llm-profile" className="text-xs">デフォルトモデル（LLM 設定）</Label>
                   <div className="flex flex-wrap items-center gap-3">
                     <Select value={llmProfileId || "__follow__"} onValueChange={(v) => setLlmProfileId(v === "__follow__" ? "" : v)}>
                       <SelectTrigger id="llm-profile" className="h-8 w-72">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="__follow__">跟随任务 / 全局激活配置</SelectItem>
+                        <SelectItem value="__follow__">タスク / グローバルなアクティブ設定に従う</SelectItem>
                         {llmProfiles.map((p) => (
                           <SelectItem key={p.id} value={String(p.id)}>
-                            {p.name}（{p.model}）{p.is_default ? " · 默认" : ""}
+                            {p.name}（{p.model}）{p.is_default ? " · デフォルト" : ""}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                     <span className="text-muted-foreground max-w-md text-xs">
-                      为该 Agent 绑定固定 LLM 配置（点「保存配置」生效）。优先级：Agent 绑定 &gt; 任务/会话指定 &gt; 全局激活。
+                      この Agent に固定の LLM 設定をバインドします（「設定を保存」で反映）。優先度：Agent のバインド &gt; タスク/チャット指定 &gt; グローバルアクティブ設定。
                     </span>
                   </div>
                 </div>
@@ -310,19 +310,19 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                 {showConfig && (
                   <>
                     <div className="grid gap-1.5">
-                      <Label htmlFor="max-turns" className="text-xs">最大循环次数（0=不限）</Label>
+                      <Label htmlFor="max-turns" className="text-xs">最大ループ回数（0=無制限）</Label>
                       <Input id="max-turns" type="number" min={0} className="h-8 w-32"
                         value={maxTurns} onChange={(e) => setMaxTurns(e.target.value)} />
                     </div>
                     <div className="grid gap-1.5">
-                      <Label htmlFor="run-seconds" className="text-xs">运行时长（秒，0=不限）</Label>
+                      <Label htmlFor="run-seconds" className="text-xs">実行時間（秒、0=無制限）</Label>
                       <Input id="run-seconds" type="number" min={0} className="h-8 w-32"
                         value={runSecs} onChange={(e) => setRunSecs(e.target.value)} />
                     </div>
                   </>
                 )}
                 <Button size="sm" variant="outline" onClick={saveConfig}>
-                  <SaveIcon /> 保存配置
+                  <SaveIcon /> 設定を保存
                 </Button>
               </div>
               {showWebSearch && (
@@ -334,11 +334,11 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                     onCheckedChange={setWebSearch}
                   />
                   <div className="grid gap-0.5">
-                    <Label htmlFor="web-search" className="text-sm">网络搜索</Label>
+                    <Label htmlFor="web-search" className="text-sm">ウェブ検索</Label>
                     <span className="text-muted-foreground text-xs">
                       {webSearchGlobalOn
-                        ? "为该 Agent 开启后（点上方保存生效），可用 web_search 联网检索"
-                        : "需先在「系统配置」开启网络搜索并配置后端，才能在此启用"}
+                        ? "この Agent で有効化すると（上の保存で反映）、web_search によるウェブ検索が利用可能になります"
+                        : "「システム設定」でウェブ検索を有効化し、バックエンドを設定した後にここで有効化できます"}
                     </span>
                   </div>
                 </div>
@@ -351,9 +351,9 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                     onCheckedChange={setInteractiveShell}
                   />
                   <div className="grid gap-0.5">
-                    <Label htmlFor="interactive-shell" className="text-sm">交互式 Shell</Label>
+                    <Label htmlFor="interactive-shell" className="text-sm">インタラクティブシェル</Label>
                     <span className="text-muted-foreground text-xs">
-                      为该 Agent 开启后（点上方保存生效），可用持久 PTY 会话工具（shell_open/send/read/close/list）驱动 msfconsole/ssh/REPL 等交互程序
+                      この Agent で有効化すると（上の保存で反映）、永続 PTY セッションツール（shell_open/send/read/close/list）を使用して msfconsole/ssh/REPL などの対話型プログラムを駆動できます
                     </span>
                   </div>
                 </div>
@@ -362,7 +362,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
           )}
 
           <div className="grid gap-2">
-            <Label className="text-muted-foreground text-xs">变量（点击插入占位符，渲染时由运行时数据替换）</Label>
+            <Label className="text-muted-foreground text-xs">変数（クリックしてプレースホルダーを挿入。レンダリング時に実行時データに置換されます）</Label>
             <div className="flex flex-wrap gap-2">
               {variables.map((v) => (
                 <Tooltip key={v.name}>
@@ -375,28 +375,28 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
                     <p className="font-medium">{v.description}</p>
-                    <p className="text-muted-foreground mt-1">示例：{v.example}</p>
+                    <p className="text-muted-foreground mt-1">例：{v.example}</p>
                   </TooltipContent>
                 </Tooltip>
               ))}
-              {variables.length === 0 && <span className="text-muted-foreground text-xs">（无变量）</span>}
+              {variables.length === 0 && <span className="text-muted-foreground text-xs">（変数なし）</span>}
             </div>
           </div>
 
           <Textarea className="font-mono text-xs" rows={16} value={prompt}
-            placeholder="留空则使用内置默认提示词" onChange={(e) => setPrompt(e.target.value)} />
+            placeholder="空欄の場合はビルトインのデフォルトプロンプトを使用します" onChange={(e) => setPrompt(e.target.value)} />
 
           <div className="flex flex-wrap gap-2">
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm" onClick={doPreview}>
-                  <EyeIcon /> 预览渲染
+                  <EyeIcon /> プレビュー
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
-                  <DialogTitle>渲染预览</DialogTitle>
-                  <DialogDescription>所有 {`{{.Var}}`} 已由后端用示例值替换。</DialogDescription>
+                  <DialogTitle>プレビュー</DialogTitle>
+                  <DialogDescription>すべての {`{{.Var}}`} はバックエンドによってサンプル値に置換されています。</DialogDescription>
                 </DialogHeader>
                 <div className="max-h-[60vh] overflow-auto rounded-md border bg-muted/30 p-3">
                   <Markdown text={preview} />
@@ -404,26 +404,26 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
               </DialogContent>
             </Dialog>
             <Button size="sm" onClick={savePrompt}>
-              <SaveIcon /> 保存为新版本
+              <SaveIcon /> 新バージョンとして保存
             </Button>
             <Button variant="outline" size="sm" onClick={resetPrompt}>
-              <RotateCcwIcon /> 恢复默认
+              <RotateCcwIcon /> デフォルトに戻す
             </Button>
           </div>
 
 
           <Separator />
           <div className="grid gap-2">
-            <Label className="text-muted-foreground text-xs">版本历史</Label>
+            <Label className="text-muted-foreground text-xs">バージョン履歴</Label>
             <ul className="grid gap-1">
               {versions.map((ver, i) => (
                 <li key={ver.version} className="flex items-center gap-2 rounded-md px-1 py-0.5 text-xs hover:bg-muted/50">
                   <span className="font-mono shrink-0">v{ver.version}</span>
-                  {i === 0 && <Badge variant="secondary" className="px-1.5 py-0 shrink-0">当前</Badge>}
+                  {i === 0 && <Badge variant="secondary" className="px-1.5 py-0 shrink-0">現在</Badge>}
                   <span className="text-muted-foreground truncate flex-1">{ver.note}</span>
                   {ver.ts && (
                     <span className="text-muted-foreground/60 shrink-0 tabular-nums">
-                      {new Date(ver.ts).toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
+                      {new Date(ver.ts).toLocaleDateString("ja-JP", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
                     </span>
                   )}
                   <Button variant="ghost" size="icon-sm" className="size-6 shrink-0" onClick={() => setViewVer(ver)}>
@@ -437,7 +437,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                 </li>
               ))}
               {versions.length === 0 && (
-                <li className="text-muted-foreground text-xs">（暂无保存的版本，使用内置默认）</li>
+                <li className="text-muted-foreground text-xs">（保存されたバージョンはありません。ビルトインのデフォルトを使用）</li>
               )}
             </ul>
           </div>
@@ -449,14 +449,14 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                 <DialogTitle>
                   v{viewVer?.version}
                   {viewVer?.version === versions[0]?.version && (
-                    <Badge variant="secondary" className="ml-2 px-1.5 py-0 align-middle">当前</Badge>
+                    <Badge variant="secondary" className="ml-2 px-1.5 py-0 align-middle">現在</Badge>
                   )}
                 </DialogTitle>
                 <DialogDescription>
-                  {viewVer?.note || "（无备注）"}
+                  {viewVer?.note || "（メモなし）"}
                   {viewVer?.ts && (
                     <span className="ml-2 text-muted-foreground/60">
-                      {new Date(viewVer.ts).toLocaleString("zh-CN")}
+                      {new Date(viewVer.ts).toLocaleString()}
                     </span>
                   )}
                 </DialogDescription>
@@ -469,13 +469,13 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                   <Button variant="outline" size="sm" onClick={() => {
                     if (viewVer) { setDiffVer(viewVer); setViewVer(null); }
                   }}>
-                    <GitCompareIcon className="mr-1 size-3.5" /> 与当前版本对比
+                    <GitCompareIcon className="mr-1 size-3.5" /> 現在のバージョンと比較
                   </Button>
                 )}
                 <Button size="sm" onClick={() => {
-                  if (viewVer) { setPrompt(viewVer.template_text); setViewVer(null); toast.success(`已加载 v${viewVer.version} 到编辑器，确认后点「保存为新版本」`); }
+                  if (viewVer) { setPrompt(viewVer.template_text); setViewVer(null); toast.success(`v${viewVer.version} をエディタに読み込みました。確認後に「新バージョンとして保存」をクリックしてください`); }
                 }}>
-                  加载到编辑器
+                  エディタに読み込む
                 </Button>
               </div>
             </DialogContent>
@@ -485,11 +485,11 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
           <Dialog open={!!diffVer} onOpenChange={(o) => { if (!o) setDiffVer(null); }}>
             <DialogContent className="sm:max-w-3xl">
               <DialogHeader>
-                <DialogTitle>版本对比：v{diffVer?.version} → v{versions[0]?.version}（当前）</DialogTitle>
+                <DialogTitle>バージョンの比較：v{diffVer?.version} → v{versions[0]?.version}（現在）</DialogTitle>
                 <DialogDescription>
                   <span className="inline-flex items-center gap-3 text-xs">
-                    <span className="rounded bg-red-500/15 px-1.5 py-0.5 text-red-600 dark:text-red-400">- 删除</span>
-                    <span className="rounded bg-green-500/15 px-1.5 py-0.5 text-green-600 dark:text-green-400">+ 新增</span>
+                    <span className="rounded bg-red-500/15 px-1.5 py-0.5 text-red-600 dark:text-red-400">- 削除</span>
+                    <span className="rounded bg-green-500/15 px-1.5 py-0.5 text-green-600 dark:text-green-400">+ 追加</span>
                   </span>
                 </DialogDescription>
               </DialogHeader>
@@ -503,40 +503,40 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
       <TabsContent value="wrapup" className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
         <div className="grid gap-3">
           <p className="text-muted-foreground text-xs leading-relaxed">
-            当此 Agent 因<b>超时</b>或<b>步数耗尽</b>被终止时，系统会注入这段「收尾提示词」跑一轮收尾：
-            先把已识别但未落库的内容写回，再输出一句总结（避免烂尾）。留空则使用内置默认。
+            この Agent が<b>タイムアウト</b>または<b>ステップ上限到達</b>により終了した際、システムはこの「ラップアッププロンプト」を挿入してラップアップ（まとめ）ラウンドを実行します：
+            特定済みで未登録の内容を先に書き戻し、最後にまとめを出力します（中途半端な終了を防ぐため）。空欄の場合はビルトインのデフォルトを使用します。
           </p>
           <div className="flex items-center gap-2">
-            <Label className="text-xs">收尾提示词正文</Label>
+            <Label className="text-xs">ラップアッププロンプト本文</Label>
             {wrapup.trim() ? (
-              <Badge variant="secondary" className="px-1.5 py-0">自定义</Badge>
+              <Badge variant="secondary" className="px-1.5 py-0">カスタム</Badge>
             ) : (
-              <Badge variant="outline" className="px-1.5 py-0">使用内置默认</Badge>
+              <Badge variant="outline" className="px-1.5 py-0">ビルトインのデフォルトを使用</Badge>
             )}
           </div>
           <Textarea
             className="font-mono text-xs"
             rows={10}
             value={wrapup}
-            placeholder={wrapupDefault || "留空则使用内置默认收尾提示词"}
+            placeholder={wrapupDefault || "空欄の場合はビルトインのデフォルトラップアッププロンプトを使用します"}
             onChange={(e) => setWrapup(e.target.value)}
           />
           <div className="grid gap-1.5">
             <Label htmlFor="wrapup-turns" className="text-xs">
-              收尾轮数（收尾阶段自身最多跑几轮；0=用内置默认 {wrapupTurnsDefault} 轮）
+              ラップアップラウンド数（ラップアップフェーズ自体が最大何ラウンド実行されるか。0=ビルトインデフォルトの {wrapupTurnsDefault} ラウンド）
             </Label>
             <Input id="wrapup-turns" type="number" min={0} className="h-8 w-32"
               value={wrapupTurns} onChange={(e) => setWrapupTurns(e.target.value)} />
           </div>
           <div className="flex gap-2">
             <Button size="sm" onClick={saveWrapup}>保存</Button>
-            <Button size="sm" variant="outline" onClick={resetWrapup}>恢复默认</Button>
+            <Button size="sm" variant="outline" onClick={resetWrapup}>デフォルトに戻す</Button>
           </div>
           {wrapupDefault && (
             <>
               <Separator />
               <div className="grid gap-1.5">
-                <Label className="text-muted-foreground text-xs">内置默认（只读，供参考）</Label>
+                <Label className="text-muted-foreground text-xs">ビルトインデフォルト（読み取り専用・参考用）</Label>
                 <pre className="text-muted-foreground max-h-40 overflow-y-auto rounded-md border bg-muted/30 p-2 text-xs whitespace-pre-wrap">
                   {wrapupDefault}
                 </pre>
@@ -548,38 +548,38 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
             <>
               <Separator className="my-2" />
               <p className="text-muted-foreground text-xs leading-relaxed">
-                <b>任务超时收尾</b>（与上面的 per-run 收尾是<b>两套</b>）：当<b>整个任务</b>到达超时上限、即将结束时注入。
-                与 per-run 语义常相反（如 planner：per-run 说“别停继续规划”，任务超时说“到点停止、做最后判定”）。留空则用内置默认。
+                <b>タスクタイムアウト時のラップアップ</b>（上記の run ごとのラップアップとは<b>別系統</b>）：<b>タスク全体</b>がタイムアウト上限に達し、終了する直前に挿入されます。
+                run ごとのラップアップとは逆の意味になることがよくあります（例: planner では run ごとは「停止せずに計画を続行」、タスクタイムアウト時は「時間切れのため停止し最終判定を下す」）。空欄の場合はビルトインのデフォルトを使用します。
               </p>
               <div className="flex items-center gap-2">
-                <Label className="text-xs">任务超时收尾提示词正文</Label>
+                <Label className="text-xs">タスクタイムアウト時のラップアッププロンプト本文</Label>
                 {ttWrapup.trim() ? (
-                  <Badge variant="secondary" className="px-1.5 py-0">自定义</Badge>
+                  <Badge variant="secondary" className="px-1.5 py-0">カスタム</Badge>
                 ) : (
-                  <Badge variant="outline" className="px-1.5 py-0">使用内置默认</Badge>
+                  <Badge variant="outline" className="px-1.5 py-0">ビルトインのデフォルトを使用</Badge>
                 )}
               </div>
               <Textarea
                 className="font-mono text-xs"
                 rows={10}
                 value={ttWrapup}
-                placeholder={ttWrapupDefault || "留空则使用内置默认任务超时收尾提示词"}
+                placeholder={ttWrapupDefault || "空欄の場合はビルトインのデフォルトタスクタイムアウト時ラップアッププロンプトを使用します"}
                 onChange={(e) => setTtWrapup(e.target.value)}
               />
               <div className="grid gap-1.5">
                 <Label htmlFor="tt-turns" className="text-xs">
-                  收尾轮数（0=用内置默认 {ttTurnsDefault} 轮）
+                  ラップアップラウンド数（0=ビルトインデフォルトの {ttTurnsDefault} ラウンド）
                 </Label>
                 <Input id="tt-turns" type="number" min={0} className="h-8 w-32"
                   value={ttTurns} onChange={(e) => setTtTurns(e.target.value)} />
               </div>
               <div className="flex gap-2">
                 <Button size="sm" onClick={saveTaskTimeoutWrapup}>保存</Button>
-                <Button size="sm" variant="outline" onClick={resetTaskTimeoutWrapup}>恢复默认</Button>
+                <Button size="sm" variant="outline" onClick={resetTaskTimeoutWrapup}>デフォルトに戻す</Button>
               </div>
               {ttWrapupDefault && (
                 <div className="grid gap-1.5">
-                  <Label className="text-muted-foreground text-xs">内置默认（只读，供参考）</Label>
+                  <Label className="text-muted-foreground text-xs">ビルトインデフォルト（読み取り専用・参考用）</Label>
                   <pre className="text-muted-foreground max-h-40 overflow-y-auto rounded-md border bg-muted/30 p-2 text-xs whitespace-pre-wrap">
                     {ttWrapupDefault}
                   </pre>
@@ -592,7 +592,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
 
       {/* MCP 可见性 */}
       <TabsContent value="mcp" className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
-        <p className="text-muted-foreground mb-3 text-xs">勾选此 Agent 可见的 MCP 服务器。</p>
+        <p className="text-muted-foreground mb-3 text-xs">この Agent に表示する MCP サーバーにチェックを入れます。</p>
         <div className="grid gap-2">
           {mcp.map((m) => (
             <label key={m.id} className="flex items-center gap-2 rounded-md border p-2 text-sm">
@@ -601,13 +601,13 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
               <span className="text-muted-foreground ml-auto text-xs">{m.transport}</span>
             </label>
           ))}
-          {mcp.length === 0 && <span className="text-muted-foreground text-xs">（暂无 MCP）</span>}
+          {mcp.length === 0 && <span className="text-muted-foreground text-xs">（MCP なし）</span>}
         </div>
       </TabsContent>
 
       {/* Skill 可见性 */}
       <TabsContent value="skill" className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
-        <p className="text-muted-foreground mb-3 text-xs">勾选此 Agent 可见的 Skill。</p>
+        <p className="text-muted-foreground mb-3 text-xs">この Agent に表示する Skill にチェックを入れます。</p>
         <div className="grid gap-2">
           {skills.map((s) => (
             <label key={s.name} className="flex items-center gap-2 rounded-md border p-2 text-sm">
@@ -616,13 +616,13 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
               {s.description && <span className="text-muted-foreground ml-auto truncate text-xs">{s.description}</span>}
             </label>
           ))}
-          {skills.length === 0 && <span className="text-muted-foreground text-xs">（暂无 Skill）</span>}
+          {skills.length === 0 && <span className="text-muted-foreground text-xs">（Skill なし）</span>}
         </div>
       </TabsContent>
 
       {/* Tools 绑定 */}
       <TabsContent value="tools" className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
-        <p className="text-muted-foreground mb-3 text-xs">勾选绑定给此 Agent 的内置工具。</p>
+        <p className="text-muted-foreground mb-3 text-xs">この Agent にバインドするビルトインツールにチェックを入れます。</p>
         <div className="grid gap-2">
           {tools.map((t) => {
             const isTraffic = TRAFFIC_TOOL_KEYS.has(t.key);
@@ -642,13 +642,13 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
                 />
                 <span className="font-mono text-xs">{t.key}</span>
                 {isTraffic && (
-                  <Badge variant="secondary" className="px-1 py-0 text-[9px]">流量</Badge>
+                  <Badge variant="secondary" className="px-1 py-0 text-[9px]">トラフィック</Badge>
                 )}
                 {!t.enabled && (
-                  <Badge variant="outline" className="text-destructive px-1 py-0 text-[9px]">已停用</Badge>
+                  <Badge variant="outline" className="text-destructive px-1 py-0 text-[9px]">無効</Badge>
                 )}
                 {gated ? (
-                  <span className="text-muted-foreground ml-auto text-xs">需开启流量捕获</span>
+                  <span className="text-muted-foreground ml-auto text-xs">トラフィックキャプチャを有効化する必要があります</span>
                 ) : (
                   t.description && (
                     <span className="text-muted-foreground ml-auto line-clamp-1 max-w-[55%] text-xs">
@@ -659,7 +659,7 @@ export function AgentEditor({ agentKey, onSaved }: { agentKey: string; onSaved?:
               </label>
             );
           })}
-          {tools.length === 0 && <span className="text-muted-foreground text-xs">（暂无工具）</span>}
+          {tools.length === 0 && <span className="text-muted-foreground text-xs">（ツールなし）</span>}
         </div>
       </TabsContent>
 
@@ -751,7 +751,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
     try {
       await api.saveAgentConfig(agentKey, patch);
     } catch (e) {
-      toast.error("保存策略失败：" + (e as Error).message);
+      toast.error("ポリシーの保存に失敗しました：" + (e as Error).message);
     }
   }
   const [onInterval, setOnInterval] = React.useState(false);
@@ -828,11 +828,11 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
   async function submit() {
     const n = onInterval ? Math.max(1, Math.floor(Number(intervalSec) || 0)) : 0;
     if (n === 0 && !onFinding && !onGoalMet && !onTaskTimeout && !onToolCall && !onTaskCreate) {
-      toast.error("至少选择一种触发条件");
+      toast.error("トリガー条件を少なくとも1つ選択してください");
       return;
     }
     if (onToolCall && toolNames.length === 0) {
-      toast.error("工具调用触发至少选择一个工具");
+      toast.error("ツール呼び出しトリガーには少なくとも1つのツールを選択してください");
       return;
     }
     const body = {
@@ -855,15 +855,15 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
       if (editingId != null) {
         const cur = triggers.find((x) => x.id === editingId);
         await api.updateTrigger(editingId, { ...body, enabled: cur?.enabled ?? true });
-        toast.success("已保存修改");
+        toast.success("変更を保存しました");
       } else {
         await api.createTrigger(agentKey, { ...body, enabled: true });
-        toast.success("已添加触发器");
+        toast.success("トリガーを追加しました");
       }
       resetForm();
       reload();
     } catch (e) {
-      toast.error((editingId != null ? "保存失败：" : "添加失败：") + (e as Error).message);
+      toast.error((editingId != null ? "保存失敗：" : "追加失敗：") + (e as Error).message);
     } finally {
       setSaving(false);
     }
@@ -888,7 +888,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
       });
       reload();
     } catch (e) {
-      toast.error("保存失败：" + (e as Error).message);
+      toast.error("保存失敗：" + (e as Error).message);
     }
   }
   async function del(id: number) {
@@ -897,34 +897,34 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
       if (editingId === id) resetForm();
       reload();
     } catch (e) {
-      toast.error("删除失败：" + (e as Error).message);
+      toast.error("削除失敗：" + (e as Error).message);
     }
   }
 
   function condLabel(t: AgentTrigger): string {
     const parts: string[] = [];
-    if (t.interval_sec > 0) parts.push(`每 ${t.interval_sec}s`);
-    if (t.on_finding) parts.push("发现 finding");
-    if (t.on_goal_met) parts.push("目标达成");
-    if (t.on_task_timeout) parts.push("任务超时");
-    if (t.on_tool_call) parts.push(`工具调用(${t.tool_names.length})`);
-    if (t.on_task_create) parts.push("任务创建");
-    return parts.join(" · ") || "（无条件）";
+    if (t.interval_sec > 0) parts.push(`${t.interval_sec}秒ごと`);
+    if (t.on_finding) parts.push("finding 検知");
+    if (t.on_goal_met) parts.push("目標達成");
+    if (t.on_task_timeout) parts.push("タスクタイムアウト");
+    if (t.on_tool_call) parts.push(`ツール呼び出し (${t.tool_names.length})`);
+    if (t.on_task_create) parts.push("タスク作成");
+    return parts.join(" · ") || "（条件なし）";
   }
 
   return (
     <div className="grid gap-4">
       <p className="text-muted-foreground text-xs">
-        触发器让这个自定义 Agent 自动运行：每次触发都<b>新建一个会话运行</b>（在「对话」页可见）。
-        可多选触发条件；系统会把「本次为何触发 + 相关任务/finding/目标」自动附加到你写的基础消息后面。
+        トリガーにより、このカスタム Agent が自動実行されます：トリガーごとに<b>新しいチャットを作成して実行</b>されます（「チャット」画面に表示）。
+        複数のトリガー条件を選択可能で、システムが「今回のトリガー理由 + 関連タスク/finding/目標」を入力した基本メッセージの後ろに自動付加します。
       </p>
 
       {/* 触发后处理策略 */}
       <div className="grid gap-3 rounded-md border p-3">
-        <Label className="text-muted-foreground text-xs">触发后处理策略（决定触发如何排队/合并运行）</Label>
+        <Label className="text-muted-foreground text-xs">トリガー後の処理ポリシー（トリガーのキューイング/マージ実行を制御）</Label>
         <div className="flex flex-wrap items-center gap-4">
           <div className="grid gap-1">
-            <Label className="text-xs">运行模式</Label>
+            <Label className="text-xs">実行モード</Label>
             <Select
               value={runMode}
               onValueChange={(v) => {
@@ -937,14 +937,14 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="serial">串行（排队，一次一个）</SelectItem>
-                <SelectItem value="parallel">并行（各自并发会话）</SelectItem>
+                <SelectItem value="serial">直列（キューイングして1つずつ実行）</SelectItem>
+                <SelectItem value="parallel">並列（各チャットを並行実行）</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="grid gap-1">
-            <Label className="text-xs">合并模式</Label>
+            <Label className="text-xs">マージモード</Label>
             <Select
               value={mergeMode}
               disabled={runMode === "parallel"}
@@ -958,16 +958,16 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
                 <SelectValue />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="by_task">按任务合并</SelectItem>
-                <SelectItem value="all">全部合并成一条</SelectItem>
-                <SelectItem value="none">不合并</SelectItem>
+                <SelectItem value="by_task">タスクごとにマージ</SelectItem>
+                <SelectItem value="all">すべて1つにマージ</SelectItem>
+                <SelectItem value="none">マージしない</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {runMode === "parallel" && (
             <div className="grid gap-1">
-              <Label htmlFor="tr-maxpar" className="text-xs">最大并发（0=不限）</Label>
+              <Label htmlFor="tr-maxpar" className="text-xs">最大同時実行数（0=無制限）</Label>
               <Input
                 id="tr-maxpar"
                 type="number"
@@ -986,12 +986,12 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
         </div>
         <p className="text-muted-foreground text-xs">
           {runMode === "parallel"
-            ? "并行：每次触发立即各开一个会话并发运行，不合并；超过最大并发的触发排队等空位。"
+            ? "並列：トリガーごとに新しいチャットを即座に開き並行実行します（マージなし）。最大同時実行数を超えたトリガーは空きを待ちます。"
             : mergeMode === "by_task"
-              ? "串行·按任务合并：同 agent 一次跑一个；排队中同一任务的事件触发合并成一条会话。"
+              ? "直列・タスクごとにマージ：同一 Agent は一度に1つずつ実行。キュー内の同一タスクのイベントトリガーを1つのチャットにマージします。"
               : mergeMode === "all"
-                ? "串行·全部合并：同 agent 一次跑一个；取队列时把当前排队的所有触发合并成一条会话。"
-                : "串行·不合并：同 agent 一次跑一个；每条触发各自一个会话。"}
+                ? "直列・すべてマージ：同一 Agent は一度に1つずつ実行。キューから取り出す際に現在待機中のすべてのトリガーを1つのチャットにマージします。"
+                : "直列・マージしない：同一 Agent は一度に1つずつ実行。各トリガーを個別のチャットで実行します。"}
         </p>
       </div>
 
@@ -999,25 +999,25 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
       <div className="grid gap-3 rounded-md border p-3">
         <Label className="text-muted-foreground text-xs">
           {editingId != null
-            ? `编辑触发器 #${editingId}（改完点「保存修改」）`
-            : "新增触发器（每种条件可填各自的用户消息）"}
+            ? `トリガー #${editingId} を編集（変更後に「変更を保存」をクリック）`
+            : "トリガーの新規追加（各条件ごとに個別のユーザーメッセージを設定可能）"}
         </Label>
 
         {/* 定时 */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onInterval} onCheckedChange={(v) => setOnInterval(!!v)} /> 定时触发
+            <Checkbox checked={onInterval} onCheckedChange={(v) => setOnInterval(!!v)} /> 定期実行トリガー
           </label>
           {onInterval && (
             <div className="grid gap-1.5">
               <div className="flex items-center gap-2">
-                <Label htmlFor="tr-interval" className="text-xs">每</Label>
+                <Label htmlFor="tr-interval" className="text-xs">間隔</Label>
                 <Input id="tr-interval" type="number" min={1} className="h-8 w-24"
                   value={intervalSec} onChange={(e) => setIntervalSec(e.target.value)} />
                 <span className="text-muted-foreground text-xs">秒</span>
               </div>
               <Textarea className="text-xs" rows={2} value={intervalMsg}
-                placeholder="定时触发时发给 agent 的话，如：巡检所有任务" onChange={(e) => setIntervalMsg(e.target.value)} />
+                placeholder="定期実行時に Agent に送信するメッセージ（例：全タスクを巡回点検）" onChange={(e) => setIntervalMsg(e.target.value)} />
             </div>
           )}
         </div>
@@ -1025,48 +1025,48 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
         {/* finding */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onFinding} onCheckedChange={(v) => setOnFinding(!!v)} /> 发现 finding 时触发
+            <Checkbox checked={onFinding} onCheckedChange={(v) => setOnFinding(!!v)} /> finding 検知時にトリガー
           </label>
           {onFinding && (
             <Textarea className="text-xs" rows={2} value={findingMsg}
-              placeholder="发现 finding 时发给 agent 的话（系统会附带任务与 finding 详情）" onChange={(e) => setFindingMsg(e.target.value)} />
+              placeholder="finding 検知時に Agent に送信するメッセージ（タスクと finding の詳細が自動付加されます）" onChange={(e) => setFindingMsg(e.target.value)} />
           )}
         </div>
 
         {/* 目标达成 */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onGoalMet} onCheckedChange={(v) => setOnGoalMet(!!v)} /> 目标达成时触发
+            <Checkbox checked={onGoalMet} onCheckedChange={(v) => setOnGoalMet(!!v)} /> 目標達成時にトリガー
           </label>
           {onGoalMet && (
             <Textarea className="text-xs" rows={2} value={goalMsg}
-              placeholder="目标达成时发给 agent 的话（系统会附带任务与达成的目标）" onChange={(e) => setGoalMsg(e.target.value)} />
+              placeholder="目標達成時に Agent に送信するメッセージ（タスクと達成された目標が自動付加されます）" onChange={(e) => setGoalMsg(e.target.value)} />
           )}
         </div>
 
         {/* 任务超时 */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onTaskTimeout} onCheckedChange={(v) => setOnTaskTimeout(!!v)} /> 任务超时时触发
+            <Checkbox checked={onTaskTimeout} onCheckedChange={(v) => setOnTaskTimeout(!!v)} /> タスクタイムアウト時にトリガー
           </label>
           {onTaskTimeout && (
             <Textarea className="text-xs" rows={2} value={taskTimeoutMsg}
-              placeholder="任务超时时发给 agent 的话（系统会附带任务编号与目标）" onChange={(e) => setTaskTimeoutMsg(e.target.value)} />
+              placeholder="タスクタイムアウト時に Agent に送信するメッセージ（タスク番号と目標が自動付加されます）" onChange={(e) => setTaskTimeoutMsg(e.target.value)} />
           )}
         </div>
 
         {/* 工具调用 */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onToolCall} onCheckedChange={(v) => setOnToolCall(!!v)} /> 工具调用时触发
+            <Checkbox checked={onToolCall} onCheckedChange={(v) => setOnToolCall(!!v)} /> ツール呼び出し時にトリガー
           </label>
           {onToolCall && (
             <div className="grid gap-1.5">
               <div className="text-muted-foreground text-xs">
-                选择要监听的工具（至少一个）；任务执行中这些工具每次<b>调用完成</b>都会触发。已选 {toolNames.length} 个。
+                監視するツールを選択してください（少なくとも1つ）。タスク実行中にこれらのツールの<b>呼び出し完了</b>ごとにトリガーされます。選択済み: {toolNames.length} 個。
               </div>
               <div className="max-h-40 overflow-y-auto rounded-md border p-2">
-                {tools.length === 0 && <span className="text-muted-foreground text-xs">（工具列表为空）</span>}
+                {tools.length === 0 && <span className="text-muted-foreground text-xs">（ツール一覧が空です）</span>}
                 <div className="grid gap-1">
                   {tools.map((tool) => (
                     <label key={tool.key} className="flex items-start gap-2 text-xs">
@@ -1081,7 +1081,7 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
                 </div>
               </div>
               <Textarea className="text-xs" rows={2} value={toolCallMsg}
-                placeholder="工具被调用时发给 agent 的话（系统会附带任务信息、工具入参与返回内容）" onChange={(e) => setToolCallMsg(e.target.value)} />
+                placeholder="ツール呼び出し時に Agent に送信するメッセージ（タスク情報、ツールの入力引数、戻り値が自動付加されます）" onChange={(e) => setToolCallMsg(e.target.value)} />
             </div>
           )}
         </div>
@@ -1089,21 +1089,21 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
         {/* 任务创建 */}
         <div className="grid gap-1.5">
           <label className="flex items-center gap-2 text-sm">
-            <Checkbox checked={onTaskCreate} onCheckedChange={(v) => setOnTaskCreate(!!v)} /> 任务创建时触发
+            <Checkbox checked={onTaskCreate} onCheckedChange={(v) => setOnTaskCreate(!!v)} /> タスク作成時にトリガー
           </label>
           {onTaskCreate && (
             <Textarea className="text-xs" rows={2} value={taskCreateMsg}
-              placeholder="任务被创建时发给 agent 的话（系统会附带任务编号与目标）" onChange={(e) => setTaskCreateMsg(e.target.value)} />
+              placeholder="タスク作成時に Agent に送信するメッセージ（タスク番号と目標が自動付加されます）" onChange={(e) => setTaskCreateMsg(e.target.value)} />
           )}
         </div>
 
         <div className="flex items-center gap-2">
           <Button size="sm" onClick={submit} disabled={saving}>
-            <SaveIcon /> {editingId != null ? "保存修改" : "添加触发器"}
+            <SaveIcon /> {editingId != null ? "変更を保存" : "トリガーを追加"}
           </Button>
           {editingId != null && (
             <Button size="sm" variant="ghost" onClick={resetForm} disabled={saving}>
-              <XIcon /> 取消编辑
+              <XIcon /> 編集をキャンセル
             </Button>
           )}
         </div>
@@ -1111,8 +1111,8 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
 
       {/* 已有触发器 */}
       <div className="grid gap-2">
-        <Label className="text-muted-foreground text-xs">已有触发器</Label>
-        {triggers.length === 0 && <span className="text-muted-foreground text-xs">（暂无）</span>}
+        <Label className="text-muted-foreground text-xs">登録済みトリガー</Label>
+        {triggers.length === 0 && <span className="text-muted-foreground text-xs">（なし）</span>}
         {triggers.map((t) => (
           <div
             key={t.id}
@@ -1126,29 +1126,29 @@ function AgentTriggersTab({ agentKey, agent }: { agentKey: string; agent?: Agent
               <div className="flex flex-wrap items-center gap-1.5">
                 <span className="font-medium">{condLabel(t)}</span>
                 {!t.enabled && (
-                  <Badge variant="outline" className="text-destructive px-1 py-0 text-[9px]">已停用</Badge>
+                  <Badge variant="outline" className="text-destructive px-1 py-0 text-[9px]">無効</Badge>
                 )}
               </div>
               <div className="text-muted-foreground grid gap-0.5 text-xs">
-                {t.interval_sec > 0 && t.interval_message && <div className="line-clamp-1">定时：{t.interval_message}</div>}
+                {t.interval_sec > 0 && t.interval_message && <div className="line-clamp-1">定期：{t.interval_message}</div>}
                 {t.on_finding && t.finding_message && <div className="line-clamp-1">finding：{t.finding_message}</div>}
-                {t.on_goal_met && t.goal_message && <div className="line-clamp-1">目标：{t.goal_message}</div>}
-                {t.on_task_timeout && t.task_timeout_message && <div className="line-clamp-1">超时：{t.task_timeout_message}</div>}
-                {t.on_task_create && t.task_create_message && <div className="line-clamp-1">任务创建：{t.task_create_message}</div>}
+                {t.on_goal_met && t.goal_message && <div className="line-clamp-1">目標：{t.goal_message}</div>}
+                {t.on_task_timeout && t.task_timeout_message && <div className="line-clamp-1">タイムアウト：{t.task_timeout_message}</div>}
+                {t.on_task_create && t.task_create_message && <div className="line-clamp-1">タスク作成：{t.task_create_message}</div>}
                 {t.on_tool_call && (
                   <>
-                    <div className="line-clamp-1">工具：{t.tool_names.join("、") || "（未选）"}</div>
-                    {t.tool_call_message && <div className="line-clamp-1">消息：{t.tool_call_message}</div>}
+                    <div className="line-clamp-1">ツール：{t.tool_names.join("、") || "（未選択）"}</div>
+                    {t.tool_call_message && <div className="line-clamp-1">メッセージ：{t.tool_call_message}</div>}
                   </>
                 )}
               </div>
             </div>
             <Button variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-foreground"
-              onClick={() => startEdit(t)} title="编辑">
+              onClick={() => startEdit(t)} title="編集">
               <PencilIcon className="size-3.5" />
             </Button>
             <Button variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-destructive"
-              onClick={() => del(t.id)} title="删除">
+              onClick={() => del(t.id)} title="削除">
               <Trash2Icon className="size-3.5" />
             </Button>
           </div>

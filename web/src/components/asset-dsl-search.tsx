@@ -14,167 +14,167 @@ import { cn } from "@/lib/utils";
 const DSL_FIELDS: { name: string; desc: string; ops: { op: string; desc: string }[] }[] = [
   {
     name: "domain",
-    desc: "域名（根域名/子域名/服务域名）",
+    desc: "ドメイン（ルートドメイン/サブドメイン/サービスドメイン）",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "ip",
-    desc: "IPv4/IPv6 地址",
+    desc: "IPv4/IPv6 アドレス",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "url",
-    desc: "完整 URL（服务/接口）",
+    desc: "完全な URL（サービス/エンドポイント）",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "root_domain",
-    desc: "根域名",
+    desc: "ルートドメイン",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "page_title",
-    desc: "页面标题（HTTP 服务）",
+    desc: "ページタイトル（HTTP サービス）",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "icp",
-    desc: "ICP 备案号",
+    desc: "ICP 登録番号",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "service_name",
-    desc: "服务名称（非 HTTP 服务）",
+    desc: "サービス名（非 HTTP サービス）",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "app_name",
-    desc: "应用名称",
+    desc: "アプリケーション名",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "bundle_id",
-    desc: "应用 Bundle ID",
+    desc: "アプリケーション Bundle ID",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "category",
-    desc: "应用分类",
+    desc: "アプリケーションカテゴリ",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "app_icp",
-    desc: "应用 ICP 备案",
+    desc: "アプリケーション ICP 登録",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "method",
-    desc: "HTTP 方法 GET/POST/PUT/…",
+    desc: "HTTP メソッド GET/POST/PUT/…",
     ops: [
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "service_type",
-    desc: "服务类型：http | other",
+    desc: "サービス種別：http | other",
     ops: [
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "record_type",
-    desc: "DNS 解析类型 A/CNAME/MX/…",
+    desc: "DNS レコード種別 A/CNAME/MX/…",
     ops: [
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "technology",
-    desc: "技术指纹（数组字段）",
+    desc: "技術フィンガープリント（配列フィールド）",
     ops: [
-      { op: "=", desc: "模糊匹配" },
-      { op: "==", desc: "精确匹配" },
-      { op: "!=", desc: "排除" },
+      { op: "=", desc: "あいまい一致" },
+      { op: "==", desc: "完全一致" },
+      { op: "!=", desc: "除外" },
     ],
   },
   {
     name: "port",
-    desc: "端口号（整数）",
+    desc: "ポート番号（整数）",
     ops: [
-      { op: "==", desc: "等于" },
-      { op: "!=", desc: "不等于" },
-      { op: ">", desc: "大于" },
-      { op: ">=", desc: "大于等于" },
-      { op: "<", desc: "小于" },
-      { op: "<=", desc: "小于等于" },
+      { op: "==", desc: "等しい" },
+      { op: "!=", desc: "等しくない" },
+      { op: ">", desc: "より大きい" },
+      { op: ">=", desc: "以上" },
+      { op: "<", desc: "より小さい" },
+      { op: "<=", desc: "以下" },
     ],
   },
   {
     name: "status_code",
-    desc: "HTTP 状态码（整数）",
+    desc: "HTTP ステータスコード（整数）",
     ops: [
-      { op: "==", desc: "等于" },
-      { op: "!=", desc: "不等于" },
-      { op: ">", desc: "大于" },
-      { op: ">=", desc: "大于等于" },
-      { op: "<", desc: "小于" },
-      { op: "<=", desc: "小于等于" },
+      { op: "==", desc: "等しい" },
+      { op: "!=", desc: "等しくない" },
+      { op: ">", desc: "より大きい" },
+      { op: ">=", desc: "以上" },
+      { op: "<", desc: "より小さい" },
+      { op: "<=", desc: "以下" },
     ],
   },
-  { name: "company_id", desc: "归属企业 ID（整数）", ops: [{ op: "==", desc: "等于" }] },
-  { name: "task_id", desc: "来源任务 ID（整数）", ops: [{ op: "==", desc: "等于" }] },
+  { name: "company_id", desc: "所属企業 ID（整数）", ops: [{ op: "==", desc: "等しい" }] },
+  { name: "task_id", desc: "作成元タスク ID（整数）", ops: [{ op: "==", desc: "等しい" }] },
 ];
 
 const LOGIC_OPS = [
-  { label: "AND", desc: "且（两个条件都满足）" },
-  { label: "OR", desc: "或（满足其中之一）" },
+  { label: "AND", desc: "AND（両方の条件を満たす）" },
+  { label: "OR", desc: "OR（いずれかの条件を満たす）" },
 ];
 
 interface DslSuggestion {
@@ -341,7 +341,7 @@ export function AssetDslSearch({
         <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           ref={inputRef}
-          placeholder="DSL 搜索：domain=example AND status_code>=400"
+          placeholder="DSL 検索：domain=example AND status_code>=400"
           value={query}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
@@ -375,7 +375,7 @@ export function AssetDslSearch({
       </div>
       {query.trim() && !open && (
         <p className="pl-1 text-[11px] text-muted-foreground">
-          {loading ? "搜索中…" : error ? <span className="text-destructive">{error}</span> : `找到 ${count ?? 0} 条`}
+          {loading ? "検索中…" : error ? <span className="text-destructive">{error}</span> : `${count ?? 0} 件ヒット`}
         </p>
       )}
     </div>
